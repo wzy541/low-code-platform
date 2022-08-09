@@ -10,9 +10,9 @@
         <el-button type="primary" plain>生成页面</el-button>
         <div class="resolutionRatio" >
           <span>分辨率:</span>
-        <el-input v-model="viewWidth" size="mini" placeholder="" ></el-input>
+        <el-input v-model.number="viewWidth" oninput="value=value.replace(/[^\d]/g,'')" size="mini" ></el-input>
         <span>x</span>
-        <el-input v-model="viewHeight" size="mini" placeholder="" ></el-input>
+        <el-input v-model.number="viewHeight" oninput="value=value.replace(/[^\d]/g,'')"  size="mini" ></el-input>
         </div>
       </el-row>
     </header>
@@ -20,7 +20,7 @@
     <div class="container">
     	<!-- 中间区域 -->
         <div class="middle column">
-            <MiddleCanvas />
+            <MiddleCanvas :viewHeight="viewHeight"  :viewWidth="viewWidth"/>
         </div>
         <!-- 左边区域 -->
         <div class="left column">
@@ -49,8 +49,20 @@ export default {
   },
   data(){
     return{
-      viewWidth:1080,
-      viewHeight:1920
+      viewWidth:1920,
+      viewHeight:1080
+    }
+  },
+  watch:{
+    viewWidth(newValue){
+       if(newValue==''){
+        this.viewWidth=0
+       }
+    },
+    viewHeight(newValue){
+       if(newValue==''){
+        this.viewHeight=0
+       }
     }
   }
 }
