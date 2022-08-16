@@ -6,11 +6,11 @@
            事件名：setElement
            触发：鼠标抬起
       -->
-      <div @mouseup="setElement" :style="'width:'+viewWidth+'px;' +'height:'+viewHeight+'px'">
+      <canvas id="myCanvas" @mouseup="setElement" :style="'width:'+viewWidth+'px;' +'height:'+viewHeight+'px'">
         <!--
           画布内容
         -->
-      </div>
+      </canvas>
     </el-card>
   </div>
 </template>
@@ -77,6 +77,7 @@ export default {
     },
   }
 }
+
 </script>
 
 <style lang="less" scoped>
@@ -90,13 +91,18 @@ export default {
     overflow: scroll;
     height: 100%;
 
-    div {
+    canvas {
       // position: relative;
       // top: 50%;
       // transform:translateY(-50%) ;
       // transform: scale(2);
       margin: 0 auto;
-      background-color: #ccc;
+      //画布网格样式
+      height: inherit; /* 继承高度 */
+      background: #ccc;
+      background: -webkit-linear-gradient(top, transparent 40px, gray 41px),-webkit-linear-gradient(left, transparent 40px, gray 41px);
+      background-size: 41px 41px;
+
     }
   }
 
