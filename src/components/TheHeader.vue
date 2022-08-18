@@ -22,8 +22,8 @@ export default {
   name: "TheHeader",
   data(){
     return {
-      viewWidth:1920,
-      viewHeight:1080,
+      viewWidth:this.$store.state.viewWidth,
+      viewHeight:this.$store.state.viewHeight,
     }
   },
   methods:{
@@ -68,7 +68,7 @@ header {
       }
 
       .el-input {
-        width: 60px;
+        width: 70px;
         height: 30px;
       }
 
