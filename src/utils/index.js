@@ -1,5 +1,6 @@
 import Vue from "vue";
 
+/** Woceda不知道这是干嘛的 **/
 let getAttrStr = (attrs) => {
   let attrStr = ''
   attrs.forEach(item => {
@@ -7,6 +8,9 @@ let getAttrStr = (attrs) => {
   });
   return attrStr
 }
+export default getAttrStr
+
+/** 产生随机ID **/
 export const getId = () => { //获取随机ID，  (其实吧,可以调库的)
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
@@ -17,6 +21,8 @@ export const getId = () => { //获取随机ID，  (其实吧,可以调库的)
   return s4() + s4() + '-' + s4();
   // 0x10000：以0x开始的数据表示16进制，10000转成十进制数就是65536，实际上这是为了后面获取四位数随机号码所以乘以10000，而为了获取包含字母在内的字符就用16进制。
 }
+
+/** 挂载组件 **/
 export const mountedComponent = (component) => {  //挂载组件
   let data = {}
   let id = component.info.id;
@@ -56,16 +62,15 @@ export const mountedComponent = (component) => {  //挂载组件
     })
   }, 500)
 }
-export default getAttrStr
 
-//创建组件数据
+/** 初始化一个全新的组件并返回 **/
 export function getComponent(info) {
-  // console.log(info.type);  //检验数据是否接收成功
   let component = {};
   component.id=info.id;
   component.text='请输入内容';
   component.class='';
   component.child=[];
+  component.position={top:0,left:0}
   switch (info.type) {
     case 'divComp':
       component.el='<el-div>';
@@ -99,16 +104,12 @@ export function getComponent(info) {
   return component;
 }
 
-export const handleData = (id, data, obj) => {
-  data.forEach(item => {
-    if (item.id === id) {
-      //这一段就是修改代码,需要咋mutations里完成
-      item.children ? item.child.push(obj) : item.child = [obj]
-    } else {
-      if (item.children) {
-        handleData(id, item.children, obj)
-      }
-    }
-  })
-  return data
+/** 处理path并返回,用于交给寻路函数处理 **/
+export function disposePath(path){
+  path = path.reverse();
+  let pathEnd = 0;
+  while (path[pathEnd].id !== 'canvas') {
+    pathEnd++;
+  }
+  return path.splice(pathEnd+1);
 }

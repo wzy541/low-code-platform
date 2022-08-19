@@ -26,22 +26,23 @@
             draggable="true"
             :key="index"
             :id="element.id"
-            :style="element.style"
-        >{{element.text}}
+            :style="'width:'+element.style.width+'px;' +'height:'+element.style.height+'px;'"
+        >{{ element.text }}
           <div
               v-for="(element_1,index) in element.child"
               draggable="true"
               :key="index"
               :id="element_1.id"
               :style="element_1.style"
-          >{{element_1.text}}
+          >{{ element_1.text }}
             <div
                 v-for="(element_2,index) in element_1.child"
                 draggable="true"
                 :key="index"
                 :id="element_2.id"
                 :style="element_2.style"
-            >{{element_2.text}}</div>
+            >{{ element_2.text }}
+            </div>
           </div>
         </div>
       </div>
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-import {getComponent, getId, /*mountedComponent*/} from "../utils/index"; //导入组件创建是相关函数
+import {getComponent, getId,disposePath} from "../utils/index"; //导入组件创建是相关函数
 
 export default {
   name: 'MiddleCanvas',
@@ -63,45 +64,19 @@ export default {
   methods: {
     //画布点击事件,需要重构,想办法获取点击的元素
     checkComp(e) {
-      // console.log(e);
-      // console.log('e.clientX:' + e.clientX+'\n'+'e.clientY:'+e.clientY);
-      console.log('e.offsetX:' + e.offsetX + '\n' + 'e.offsetY:' + e.offsetY);
-      let reg = /\w{8}-\w{4}/;
-      let node = e.target;
-      let count = 0;
-      while (node && !reg.test(node.id)) {
-        count++;
-        if (count > 20) {
-          return;
-        }
-        node = node.parentNode; //返回父节点
-      }
-      if (node && node.id) {
-        this.currComp = this.components.find((item) => {
-          if (item.info.id === node.id) {
-            return item;
-          }
-        });
-        // this.currComp包含了样式,info(id,name,type),position(left,top,zIndex)和template
-      } else {
-        this.currComp = null;
-      }
-      this.$emit("currComp", this.currComp);  //向父组件传递参数
+      let path = disposePath(e.path);
+      this.$store.commit('deleteLeaves',path);
     },
     //拖拽到画布的回调
     dragOver(e) {
       e.preventDefault();
     },
-    //鼠标松开的回调 (就是放置组件元素的时候)需要完全重写,正在重写
+    //鼠标松开的回调 (重写的差不多了,但是丢失了位置信息)
     drop(e) {
-      // console.log(e); //鼠标放下的事件回调信息
       e.preventDefault(); //阻止默认事件被触发
       let info = JSON.parse(e.dataTransfer.getData("info"));  //取得从leftView组件传递过来的对象参数
-      // console.log("拖拽的组件：", info);  //用于检验拖拽的组件参数是否正常
       info.id = getId();  //设置唯一的id.  赋予元素唯一的id
       let component = getComponent(info); //利用info(信息)初始化一个组件
-      // console.log("组件的属性：", component);
-
       //找到组件的宽高
       let compWidth = 0;
       let compHeight = 0;
@@ -113,30 +88,16 @@ export default {
       //计算画布上的组件的位置,e.offsetX和e.offsetY为鼠标放下时的坐标
       let left = e.offsetX - compWidth / 2;
       let top = e.offsetY - compHeight / 2;
-      // console.log('e.offsetX:' + e.offsetX+'\n'+'e.offsetY:'+e.offsetY);
       if (left < 0) {
         left = 0;
       }
       if (top < 0) {
         top = 0;
       }
-      // console.log("组件的位置（左，上）：", left, top);
       //设置组件在画布的位置信息
       component.position = {left, top,};
-      // console.log(component);
-      // 鼠标获得抬起时下方的dom元素
-      // console.log(e.path);
-      //处理path
-      let path = e.path.reverse();
-      let pathEnd = 0;
-      for (; path[pathEnd].id !== 'canvas';) {
-        pathEnd++;  //这样写只是不想被报弱错误,仅此而已
-      }
-      path = path.splice(pathEnd);
-
       //将component加入到domTree中并生成页面图标
-      this.$store.commit('addLeaves', {path:path,component:component});
-
+      this.$store.commit('addLeaves', {path: disposePath(e.path), component: component});
     },
     //鼠标按下的回调,需要重写
     mouseDownStart(e) {
@@ -153,7 +114,7 @@ export default {
       let offsetX = e.clientX - this.startPosition.x;
       let offsetY = e.clientY - this.startPosition.y;
 
-      //设置组件当前的位置,让组件在拖拽时也具有视觉效果
+      /*//设置组件当前的位置,让组件在拖拽时也具有视觉效果(不理解为什么有这一段代码,其实拖动过程中并不需要另外再写这样的函数了)
       let comp = document.getElementById(this.currComp.info.id);
       Object.assign(comp.style, {
         // left: this.currComp.position.left + offsetX + "px",
@@ -170,7 +131,7 @@ export default {
                 this.currComp.position.top + offsetY,
                 this.currComp
             ) + "px",
-      });
+      });*/
 
       //设置选中框的位置
       let borderComp = document.getElementById("borderBox");
