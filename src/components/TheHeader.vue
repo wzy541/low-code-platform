@@ -22,8 +22,8 @@ export default {
   name: "TheHeader",
   data(){
     return {
-      viewWidth:this.$store.state.viewWidth,
-      viewHeight:this.$store.state.viewHeight,
+      viewWidth:this.$store.state.domTree.style.width,
+      viewHeight:this.$store.state.domTree.style.height,
     }
   },
   methods:{

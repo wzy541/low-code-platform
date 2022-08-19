@@ -21,29 +21,29 @@
         <!--这是一种解决思路,但是终归有很大的弊端,需要思考改进,使用的方法是通过
         固定的v-for循环来刷新这就意味着无法确定元素的标签(div)和固定的层数.
         -->
-        <!--<div
-            v-for="(element,index) in this.$store.state.domTree"
+        <div
+            v-for="(element,index) in this.$store.state.domTree.child"
             draggable="true"
             :key="index"
             :id="element.id"
             :style="element.style"
-        >{{element.name}}
+        >{{element.text}}
           <div
               v-for="(element_1,index) in element.child"
               draggable="true"
               :key="index"
               :id="element_1.id"
               :style="element_1.style"
-          >{{element_1.name}}
+          >{{element_1.text}}
             <div
                 v-for="(element_2,index) in element_1.child"
                 draggable="true"
                 :key="index"
                 :id="element_2.id"
                 :style="element_2.style"
-            >{{element_2.name}}</div>
+            >{{element_2.text}}</div>
           </div>
-        </div>-->
+        </div>
       </div>
     </el-card>
   </div>
@@ -56,9 +56,8 @@ export default {
   name: 'MiddleCanvas',
   data() {
     return {
-      viewWidth: this.$store.state.viewWidth,
-      viewHeight: this.$store.state.viewHeight,
-
+      viewWidth: this.$store.state.domTree.style.width,
+      viewHeight: this.$store.state.domTree.style.height,
     }
   },
   methods: {
@@ -101,7 +100,7 @@ export default {
       // console.log("拖拽的组件：", info);  //用于检验拖拽的组件参数是否正常
       info.id = getId();  //设置唯一的id.  赋予元素唯一的id
       let component = getComponent(info); //利用info(信息)初始化一个组件
-      console.log("组件的属性：", component);
+      // console.log("组件的属性：", component);
 
       //找到组件的宽高
       let compWidth = 0;
@@ -121,16 +120,22 @@ export default {
       if (top < 0) {
         top = 0;
       }
-      console.log("组件的位置（左，上）：", left, top);
+      // console.log("组件的位置（左，上）：", left, top);
       //设置组件在画布的位置信息
       component.position = {left, top,};
+      // console.log(component);
       // 鼠标获得抬起时下方的dom元素
-      console.log(e.path);
+      // console.log(e.path);
+      //处理path
+      let path = e.path.reverse();
+      let pathEnd = 0;
+      for (; path[pathEnd].id !== 'canvas';) {
+        pathEnd++;  //这样写只是不想被报弱错误,仅此而已
+      }
+      path = path.splice(pathEnd);
+
       //将component加入到domTree中并生成页面图标
-      this.$store.dispatch('generateDom',e.path,component);
-
-
-
+      this.$store.commit('addLeaves', {path:path,component:component});
 
     },
     //鼠标按下的回调,需要重写
@@ -249,13 +254,13 @@ export default {
   },
   //监听属性,收到页面大小数据后实时修改画布大小
   watch: {
-    "$store.state.viewWidth"() {
-      this.viewWidth = this.$store.state.viewWidth;
+    "$store.state.domTree.style.width"() {
+      this.viewWidth = this.$store.state.domTree.style.width;
       // this.elData.width = this.viewWidth;无用的?
       // console.log('正在更新ViewWidth.更新值为'+this.viewWidth);
     },
-    "$store.state.viewHeight"() {
-      this.viewHeight = this.$store.state.viewHeight;
+    "$store.state.domTree.style.height"() {
+      this.viewHeight = this.$store.state.domTree.style.height;
       // this.elData.Height = this.viewHeight;无用的?
       // console.log('正在更新ViewHeight.更新值为'+this.viewHeight);
     },

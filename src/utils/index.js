@@ -63,9 +63,9 @@ export function getComponent(info) {
   // console.log(info.type);  //检验数据是否接收成功
   let component = {};
   component.id=info.id;
-  component.txt='请输入内容';
+  component.text='请输入内容';
   component.class='';
-
+  component.child=[];
   switch (info.type) {
     case 'divComp':
       component.el='<el-div>';
