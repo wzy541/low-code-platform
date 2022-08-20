@@ -74,19 +74,22 @@ export function getComponent(info) {
   switch (info.type) {
     case 'divComp':
       component.el='<el-div>';
-      component.style= {height: 122, width: 222};
+      component.style= {height: '122px', width: '222px',color:'#000'};
       break;
     case 'linkComp':
       component.el='<el-link>';
       component.type="";
       component.href='#';
+      component.style= {color:'#000'};
       break;
     case 'textComp':
       component.el='<span>';
+      component.style= {color:'#000'};
       break
     case 'buttonComp':
       component.el='<el-button>';
       component.type="";
+      component.style= {color:'#000'};
       break;
     case 'imgComp':
       component.el='<el-image>';
@@ -95,7 +98,7 @@ export function getComponent(info) {
       break;
     case 'customComp':
       component.el='<el-div>';
-      component.style= {height: 122, width: 222};
+      component.style= {height: '122px', width: '222px',color:'#000'};
       break;
 
     default:

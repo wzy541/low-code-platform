@@ -23,24 +23,24 @@
         -->
         <div
             v-for="(element,index) in this.$store.state.domTree.child"
-            draggable="true"
+            draggable='true'
             :key="index"
-            :id="element.id"
-            :style="'width:'+element.style.width+'px;' +'height:'+element.style.height+'px;'"
+            :id=element.id
+            :style=element.style
         >{{ element.text }}
           <div
               v-for="(element_1,index) in element.child"
               draggable="true"
               :key="index"
-              :id="element_1.id"
-              :style="element_1.style"
+              :id=element_1.id
+              :style=element_1.style
           >{{ element_1.text }}
             <div
                 v-for="(element_2,index) in element_1.child"
                 draggable="true"
                 :key="index"
-                :id="element_2.id"
-                :style="element_2.style"
+                :id=element_2.id
+                :style=element_2.style
             >{{ element_2.text }}
             </div>
           </div>
@@ -59,13 +59,22 @@ export default {
     return {
       viewWidth: this.$store.state.domTree.style.width,
       viewHeight: this.$store.state.domTree.style.height,
+      currComp: null,
+      startPosition: {x: 0, y: 0},
     }
   },
   methods: {
     //画布点击事件,需要重构,想办法获取点击的元素
     checkComp(e) {
-      let path = disposePath(e.path);
-      this.$store.commit('deleteLeaves',path);
+      let path = disposePath(e.path); //取得被点击元素的路径
+      //如果点击的元素是canvas,则清空pathBuffer
+      console.log(path);
+      if (path.length===0){
+        this.$store.commit('clearPathBuffer');
+      }else {
+        this.$store.commit('writeBuffer', path);
+        this.$store.commit('highlight');  //这里是调用方法删除尝试修改样式来达到高亮目的但是失败了.需要进一步改进
+      }
     },
     //拖拽到画布的回调
     dragOver(e) {
@@ -101,20 +110,24 @@ export default {
     },
     //鼠标按下的回调,需要重写
     mouseDownStart(e) {
+      console.log(e);
       //记录按下瞬间的位置
       this.startPosition.x = e.clientX;
       this.startPosition.y = e.clientY;
       //注册移动鼠标和鼠标松开的事件
-      document.addEventListener("mousemove", this.mouseMove, true);
-      document.addEventListener("mouseup", this.mouseUp, true);
+      // document.addEventListener("mousemove", this.mouseMove, true);
+      // document.addEventListener("mouseup", this.mouseUp, true);
+      console.log('1111');
     },
     //鼠标移动的回调,需要重写
     mouseMove(e) {
+      console.log(e.path);
+      /*
       //计算偏移量
       let offsetX = e.clientX - this.startPosition.x;
       let offsetY = e.clientY - this.startPosition.y;
 
-      /*//设置组件当前的位置,让组件在拖拽时也具有视觉效果(不理解为什么有这一段代码,其实拖动过程中并不需要另外再写这样的函数了)
+      //设置组件当前的位置,让组件在拖拽时也具有视觉效果(不理解为什么有这一段代码,其实拖动过程中并不需要另外再写这样的函数了)
       let comp = document.getElementById(this.currComp.info.id);
       Object.assign(comp.style, {
         // left: this.currComp.position.left + offsetX + "px",
@@ -131,7 +144,7 @@ export default {
                 this.currComp.position.top + offsetY,
                 this.currComp
             ) + "px",
-      });*/
+      });
 
       //设置选中框的位置
       let borderComp = document.getElementById("borderBox");
@@ -150,10 +163,12 @@ export default {
             ) + "px",
         // left: this.currComp.position.left + offsetX + "px",
         // top: this.currComp.position.top + offsetY + "px",
-      });
+      });*/
     },
     //鼠标松开的回调,需要重写
     mouseUp(e) {
+      console.log(e.path);
+      /*
       //移除事件
       document.removeEventListener("mousemove", this.mouseMove, true);
       document.removeEventListener("mouseup", this.mouseUp, true);
@@ -210,7 +225,7 @@ export default {
           lastNum = num;
         }
       }
-      return lastNum;
+      return lastNum;*/
     },
   },
   //监听属性,收到页面大小数据后实时修改画布大小

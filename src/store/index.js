@@ -9,26 +9,24 @@ Vue.use(Vuex)
 // import {handleData} from '../utils/index'
 
 /******准备actions对象——响应组件中用户的动作******/
-const actions = {
-
-}
+const actions = {}
 
 
 //数据操作相关函数
 /**根据path获取domTree中的对应对象**/
-function getElement (path){
-  let i=0;
-  let j=0;
-  let temp=state.domTree;
-  while(i<path.length) { //寻路算法,最后temp将等于目标父元素
-    while(temp.child[j].id!==path[i].id){
+export function getElement(path) {
+  let i = 0;
+  let j = 0;
+  let temp = state.domTree;
+  while (i < path.length) { //寻路算法,最后temp将等于目标父元素
+    while (temp.child[j].id !== path[i].id) {
       console.log(temp.child[j].id);
       console.log(path[i].id);
       j++;
     }
-    temp=temp.child[j];
+    temp = temp.child[j];
     i++;
-    j=0;
+    j = 0;
   }
   return temp;
 }
@@ -54,22 +52,35 @@ const mutations = {
     temp.child.push(elem.component);
   },
   /* 修改元素属性(暂时写个高亮验证一下) */
-  editElement(state,path) {
+  editElement(state, path) {
     let temp = getElement(path);
-    temp.style.border='32a1ce';
+    temp.style.border = '32a1ce';
   },
-  /* 移除元素 */
-  deleteLeaves(state,path){
-    let id = path[path.length-1].id;
-    let i=0;
-    path.splice(-1,1);
+  /* 移除元素,根据path */
+  deleteLeaves(state, path) {
+    let id = path[path.length - 1].id;
+    let i = 0;
+    path.splice(-1, 1);
     let temp = getElement(path);
-    while(temp.child[i].id!==id){
+    while (temp.child[i].id !== id) {
       i++;
     }
     console.log(temp.child[i]);
-    temp.child.splice(i,1);
+    temp.child.splice(i, 1);
+  },
+  highlight(state) {
+    let temp = getElement(state.pathBuffer);
+    console.log(temp);
+    temp.style['color'] = '#FFFF00';
+    console.log(temp.style);
+  },
+  clearPathBuffer(){
+    this.state.pathBuffer.length=0;
+  },
+  writeBuffer(state,path){
+    this.state.pathBuffer=path;
   }
+  /* 移除元素，根据id */
   /*需要大量的函数,包括:
   * 3.转换函数,能将下面的dom树生成相应的结构*/
 }
@@ -91,9 +102,10 @@ const state = {
         {
           id: 'div',
           el: '<bp-div/>',  //???
-          style: {height: 200, width: 200}, //样式
+          style: {height: '200px', width: '200px',color: '#123456'}, //样式
           events: [], // 绑定的事件？
           text: '我是一个div盒子', // 内容
+          class: [], //目前只是用于存储
           child: [{ //子组件，可以有多个，为对象数组
             id: '114514',
             el: '<bp-link/>',
@@ -107,6 +119,7 @@ const state = {
         },
       ]
     },
+  pathBuffer:[],  //用来暂存需用控制的组件的路径信息
 }
 
 //创建并暴露store
