@@ -20,8 +20,8 @@ export function getElement(path) {
   let temp = state.domTree;
   while (i < path.length) { //寻路算法,最后temp将等于目标父元素
     while (temp.child[j].id !== path[i].id) {
-      console.log(temp.child[j].id);
-      console.log(path[i].id);
+      // console.log(temp.child[j].id);
+      // console.log(path[i].id);
       j++;
     }
     temp = temp.child[j];
@@ -65,7 +65,7 @@ const mutations = {
   },
   /* 高亮选中元素(目前只能改个颜色) */
   highlight(state) {
-    state.elementBuffer.style['color'] = '#FFFF00';
+    state.elementBuffer.style['color'] = '#000000';
     state.elementBuffer.style['border'] = '2px solid #FF0000';
   },
   /* 清空buffer */
@@ -77,7 +77,25 @@ const mutations = {
   writeBuffer(state,path){
     this.state.pathBuffer=path;
     this.state.elementBuffer = getElement(path);
-  }
+  },
+  refreshWidth(state,newWidth) {
+    this.state.elementBuffer.style.width=newWidth;
+  },
+  refreshHeight(state,newHeight) {
+    this.state.elementBuffer.style.height=newHeight;
+  },
+  refreshColor(state,newColor) {
+    this.state.elementBuffer.style.color=newColor;
+  },
+  refreshBackgroundColor(state,newBackgroundColor) {
+    this.state.elementBuffer.style.backgroundColor=newBackgroundColor;
+  },
+  refreshFontFamily(state,newFontFamily) {
+    this.state.elementBuffer.style.fontFamily=newFontFamily;
+  },
+  refreshFontSize(state,newFontSize) {
+    this.state.elementBuffer.style.fontSize=newFontSize;
+  },
   /*需要函数,转换函数,能将下面的dom树生成相应的结构*/
 }
 
@@ -98,14 +116,14 @@ const state = {
         {
           id: 'div',
           el: '<bp-div/>',  //???
-          style: {height: '200px', width: '200px',color: '#123456'}, //样式
+          style: {height: '200px', width: '200px',color: '#123456',backgroundColor:'',fontFamily:'',fontSize:''}, //样式
           events: [], // 绑定的事件？
           text: '我是一个div盒子', // 内容
           class: [], //目前只是用于存储
           child: [{ //子组件，可以有多个，为对象数组
             id: '114514',
             el: '<bp-link/>',
-            style: {color: '#ccc'},
+            style: {color: '#ccc',backgroundColor:'',fontFamily:'宋体',fontSize:''},
             events: [],
             href: '',
             text: '我应当是一个a标签',

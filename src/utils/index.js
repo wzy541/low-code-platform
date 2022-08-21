@@ -17,7 +17,6 @@ export const getId = () => { //获取随机ID，  (其实吧,可以调库的)
       .toString(16)
       .substring(1);
   }
-
   return s4() + s4() + '-' + s4();
   // 0x10000：以0x开始的数据表示16进制，10000转成十进制数就是65536，实际上这是为了后面获取四位数随机号码所以乘以10000，而为了获取包含字母在内的字符就用16进制。
 }
@@ -74,22 +73,22 @@ export function getComponent(info) {
   switch (info.type) {
     case 'divComp':
       component.el='<el-div>';
-      component.style= {height: '122px', width: '222px',color:'#000'};
+      component.style= {height: '122px', width: '222px',color:'#000',backgroundColor:'',fontFamily:'宋体',fontSize:''};
       break;
     case 'linkComp':
       component.el='<el-link>';
       component.type="";
       component.href='#';
-      component.style= {color:'#000'};
+      component.style= {color:'#000',backgroundColor:'',fontFamily:'宋体',fontSize:''};
       break;
     case 'textComp':
       component.el='<span>';
-      component.style= {color:'#000'};
+      component.style= {color:'#000',backgroundColor:'',fontFamily:'宋体',fontSize:''};
       break
     case 'buttonComp':
       component.el='<el-button>';
       component.type="";
-      component.style= {color:'#000'};
+      component.style= {color:'#000',backgroundColor:''};
       break;
     case 'imgComp':
       component.el='<el-image>';
@@ -98,7 +97,7 @@ export function getComponent(info) {
       break;
     case 'customComp':
       component.el='<el-div>';
-      component.style= {height: '122px', width: '222px',color:'#000'};
+      component.style= {height: '122px', width: '222px',color:'#000',backgroundColor:''};
       break;
 
     default:

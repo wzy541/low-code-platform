@@ -262,6 +262,7 @@ export default {
       // top: 50%;
       // transform:translateY(-50%) ;
       // transform: scale(2);
+      overflow: hidden;
       margin: 0 auto;
       //画布网格样式
       height: inherit; /* 继承高度 */

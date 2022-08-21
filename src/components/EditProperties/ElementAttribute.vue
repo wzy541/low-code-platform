@@ -3,11 +3,11 @@
     <div>
       <el-divider content-position="left">大小</el-divider>
       <span>宽度:</span>
-      <el-input v-model.number="width" placeholder="请输入宽度" @blur="refreshWidth"
+      <el-input v-model="elementWidth" placeholder="请输入宽度"
                 style="width: 60%;height: 50px"></el-input>
       <br>
       <span>高度:</span>
-      <el-input v-model.number="height" placeholder="请输入高度" @blur="refreshHeight"
+      <el-input v-model="elementHeight" placeholder="请输入高度"
                 style="width: 60%;height: 50px"></el-input>
     </div>
     <el-divider content-position="left">颜色</el-divider>
@@ -34,7 +34,7 @@
     ></el-autocomplete>
     <br>
     <span>大小:</span>
-    <el-input v-model.number="fontSize" placeholder="请输入数字" @blur="refreshSize"
+    <el-input v-model="fontSize" placeholder="请输入大小" @blur="refreshSize"
               style="width: 150px;height: 50px"></el-input>
     <br>
     <hr>
@@ -53,22 +53,9 @@
 
 export default {
   name: "ElementAttribute",
-  props: {
-    selectedElements:{
-      type:Object,
-      default(){
-        return undefined;
-      }
-    }
-  },
   data() {
     return {
       attributeDisplay: true,
-      width: 100,
-      height: 200,
-      textColor: '#000000',
-      backgroundColor: '',
-      fontFamily: '',
       restaurants: [],//用来暂存数据的地方
       predefineColors: [  //预置颜色
         '#ff4500',
@@ -86,7 +73,6 @@ export default {
         'hsla(209, 100%, 56%, 0.73)',
         '#c7158577'
       ],
-      fontSize: 15
     }
   },
   methods: {
@@ -118,24 +104,105 @@ export default {
     handleSelect(item) {  //获取用户选择的字体,以后要注意添加获取用户输入的功能
       console.log(item);
     },
-    refreshWidth() {
 
-    },
-    refreshHeight() {
 
-    },
     refreshSize() {
 
     }
   },
+  computed: {
+    elementWidth: {
+      get() {
+        if (this.$store.state.elementBuffer === null) {
+          return this.$store.state.domTree.style.width;
+        } else {
+          return this.$store.state.elementBuffer.style.width;
+        }
+      },
+      set(value) {
+        this.$store.commit('refreshWidth', value);
+      }
+    },
+    elementHeight: {
+      get() {
+        if (this.$store.state.elementBuffer === null) {
+          return this.$store.state.domTree.style.height;
+        } else {
+          return this.$store.state.elementBuffer.style.height;
+        }
+      },
+      set(value) {
+        this.$store.commit('refreshHeight', value);
+      }
+    },
+    textColor: {
+      get() {
+        if (this.$store.state.elementBuffer === null ||
+            this.$store.state.elementBuffer.style.textColor === null ||
+            this.$store.state.elementBuffer.style.textColor === '') {
+          return '#000000';
+        }else {
+            return this.$store.state.elementBuffer.style.color;
+          }
+
+      },
+      set(value) {
+        console.log(value);
+        this.$store.commit('refreshColor', value);
+      }
+    },
+    backgroundColor: {
+      get() {
+        if (this.$store.state.elementBuffer === null ||
+            this.$store.state.elementBuffer.style.fontSize === null ||
+            this.$store.state.elementBuffer.style.fontSize === '') {
+          return 'rgba(0, 0, 0, 0)';
+        } else {
+          return this.$store.state.elementBuffer.style.backgroundColor;
+        }
+
+      },
+      set(value) {
+        this.$store.commit('refreshBackgroundColor', value);
+      }
+    },
+    fontFamily: {
+      get() {
+        if (this.$store.state.elementBuffer === null ||
+            this.$store.state.elementBuffer.style.fontFamily === null ||
+            this.$store.state.elementBuffer.style.fontFamily === '') {
+          return '';
+        } else {
+          return this.$store.state.elementBuffer.style.fontFamily;
+        }
+      },
+      set(value) {
+        console.log(value);
+        this.$store.commit('refreshFontFamily', value);
+      }
+    },
+    fontSize: {
+      get() {
+        if (this.$store.state.elementBuffer === null ||
+            this.$store.state.elementBuffer.style.fontSize === null ||
+            this.$store.state.elementBuffer.style.fontSize === '') {
+          return '';
+        } else {
+          return this.$store.state.elementBuffer.style.fontSize;
+        }
+      },
+      set(value) {
+        this.$store.commit('refreshFontSize', value);
+      }
+    },
+  },
   watch: {
-    '$store.state.elementBuffer'(){
+    '$store.state.elementBuffer'() {
       this.attributeDisplay = this.$store.state.elementBuffer === null;
     }
   },
   mounted() {
     this.restaurants = this.loadAll();
-    this.elementRegister = this.selectedElements;
   },
 }
 </script>

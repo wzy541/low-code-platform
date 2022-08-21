@@ -61,6 +61,7 @@ export default {
 </script>
 
 <style scoped>
+
 .canvas {
   margin: 0 auto;
   display:table-cell;
@@ -74,4 +75,5 @@ export default {
   background-color: white;
   /*能通过设置background-color来解决, 但是报弱警告, 难受*/
 }
+
 </style>
