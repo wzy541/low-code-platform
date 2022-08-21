@@ -51,12 +51,7 @@ const mutations = {
     let temp = getElement(elem.path);
     temp.child.push(elem.component);
   },
-  /* 修改元素属性(暂时写个高亮验证一下) */
-  editElement(state, path) {
-    let temp = getElement(path);
-    temp.style.border = '32a1ce';
-  },
-  /* 移除元素,根据path */
+  /* 移除元素,根据path,如清除的元素为缓冲区元素,还请手动清除缓冲区以免发生错误 */
   deleteLeaves(state, path) {
     let id = path[path.length - 1].id;
     let i = 0;
@@ -68,21 +63,22 @@ const mutations = {
     console.log(temp.child[i]);
     temp.child.splice(i, 1);
   },
+  /* 高亮选中元素(目前只能改个颜色) */
   highlight(state) {
-    let temp = getElement(state.pathBuffer);
-    console.log(temp);
-    temp.style['color'] = '#FFFF00';
-    console.log(temp.style);
+    state.elementBuffer.style['color'] = '#FFFF00';
+    state.elementBuffer.style['border'] = '2px solid #FF0000';
   },
-  clearPathBuffer(){
+  /* 清空buffer */
+  clearBuffer(){
     this.state.pathBuffer.length=0;
+    this.state.elementBuffer=null;
   },
+  /* 将选中的元素添加到buffer中 */
   writeBuffer(state,path){
     this.state.pathBuffer=path;
+    this.state.elementBuffer = getElement(path);
   }
-  /* 移除元素，根据id */
-  /*需要大量的函数,包括:
-  * 3.转换函数,能将下面的dom树生成相应的结构*/
+  /*需要函数,转换函数,能将下面的dom树生成相应的结构*/
 }
 
 /******准备state对象——保存具体的数据*****/
@@ -120,6 +116,7 @@ const state = {
       ]
     },
   pathBuffer:[],  //用来暂存需用控制的组件的路径信息
+  elementBuffer:null,
 }
 
 //创建并暴露store

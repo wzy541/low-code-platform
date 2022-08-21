@@ -67,10 +67,10 @@ export default {
     //画布点击事件,需要重构,想办法获取点击的元素
     checkComp(e) {
       let path = disposePath(e.path); //取得被点击元素的路径
-      //如果点击的元素是canvas,则清空pathBuffer
-      console.log(path);
+      //如果点击的元素是canvas,则清空pathBuffer,让elementAttribute禁用
+      console.log('path'+path);
       if (path.length===0){
-        this.$store.commit('clearPathBuffer');
+        this.$store.commit('clearBuffer');
       }else {
         this.$store.commit('writeBuffer', path);
         this.$store.commit('highlight');  //这里是调用方法删除尝试修改样式来达到高亮目的但是失败了.需要进一步改进

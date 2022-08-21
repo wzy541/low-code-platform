@@ -1,5 +1,5 @@
 <template>
-  <div style="text-align: left">
+  <div>
     <div>
       <el-divider content-position="left">大小</el-divider>
       <span>宽度:</span>
@@ -40,23 +40,31 @@
     <hr>
     图片等以后再弄,先解决实际功能
     <hr>
-    <el-button type="danger" style="display: flex;top: 100%"
+    <br>
+    <el-button type="danger"
                @click="deleteElement">删除元素
     </el-button>
-    <div class="editable" v-show="attributeDisplay"></div>
+
+    <div class="editable" v-if="attributeDisplay"></div>
   </div>
 </template>
 
 <script>
-import {getElement} from "@/store";
 
 export default {
   name: "ElementAttribute",
+  props: {
+    selectedElements:{
+      type:Object,
+      default(){
+        return undefined;
+      }
+    }
+  },
   data() {
     return {
       attributeDisplay: true,
-      path: [],
-      width: getElement(this.$store.state.pathBuffer).width,
+      width: 100,
       height: 200,
       textColor: '#000000',
       backgroundColor: '',
@@ -87,7 +95,7 @@ export default {
         return; //如果pathBuffer中没有数据则不需要操作
       }
       this.$store.commit('deleteLeaves', this.$store.state.pathBuffer);
-      this.$store.commit('clearPathBuffer');
+      this.$store.commit('clearBuffer');
     },
     querySearch(queryString, cb) {
       let restaurants = this.restaurants;
@@ -120,23 +128,14 @@ export default {
 
     }
   },
-  computed: {
-    element() {
-      return getElement(this.$store.state.pathBuffer)
-    }
-  },
   watch: {
-    "$store.state.pathBuffer.length"() {
-      if (this.$store.state.pathBuffer.length === 0) {
-        this.attributeDisplay = true;
-        return;
-      }
-      this.attributeDisplay = false;
-      this.path = this.$store.state.pathBuffer;
+    '$store.state.elementBuffer'(){
+      this.attributeDisplay = this.$store.state.elementBuffer === null;
     }
   },
   mounted() {
     this.restaurants = this.loadAll();
+    this.elementRegister = this.selectedElements;
   },
 }
 </script>
