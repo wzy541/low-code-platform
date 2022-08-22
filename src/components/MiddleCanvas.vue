@@ -70,6 +70,7 @@ export default {
       //如果点击的元素是canvas,则清空pathBuffer,让elementAttribute禁用
       console.log('path'+path);
       if (path.length===0){
+        this.$store.commit('clearHighLight');
         this.$store.commit('clearBuffer');
       }else {
         this.$store.commit('writeBuffer', path);

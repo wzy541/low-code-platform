@@ -6,7 +6,6 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 //引入一些功能函数
-// import {handleData} from '../utils/index'
 
 /******准备actions对象——响应组件中用户的动作******/
 const actions = {}
@@ -65,8 +64,12 @@ const mutations = {
   },
   /* 高亮选中元素(目前只能改个颜色) */
   highlight(state) {
-    state.elementBuffer.style['color'] = '#000000';
+    state.elementBuffer.style['color'] = '#000000'; //本不需要,但是为了能有效果展示需要
     state.elementBuffer.style['border'] = '2px solid #FF0000';
+  },
+  clearHighLight(state){
+    state.elementBuffer.style['color'] = '#010101'; //本不需要,但是为了能有效果展示需要
+    state.elementBuffer.style.border = null;
   },
   /* 清空buffer */
   clearBuffer(){
@@ -104,6 +107,7 @@ const state = {
   /* 数据结构：
   树状，与dom树具有映射关系，存储各个元素的基本数据属性
   以下似乎是个例子？在正常情况下应只存在一个div元素盒子,没有下辖的a标签,
+  目前存在改变后数据不能很好地抵达目标
   该数据结构并未正式投入使用*/
   domTree:
     {

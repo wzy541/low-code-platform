@@ -15,6 +15,7 @@
     </div>
     <br>
     <el-button type="primary" @click="addAnimate">确定</el-button>
+    <div class="editable" v-if="this.$store.state.elementBuffer === null"></div>
   </div>
 </template>
 
@@ -56,7 +57,7 @@ export default {
   methods: {
     addAnimate() {
     }
-  }
+  },
 }
 </script>
 
@@ -74,6 +75,15 @@ export default {
   border: 1px outset #2c3e50;
   background-color: white;
   /*能通过设置background-color来解决, 但是报弱警告, 难受*/
+}
+
+.editable {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(256, 256, 256, 50%);
 }
 
 </style>

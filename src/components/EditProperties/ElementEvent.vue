@@ -25,7 +25,7 @@
         clearable>
     </el-input>
     <el-button type="primary" @click="setEvent">添加事件</el-button>
-    <div class="editable" v-if="Display"></div>
+    <div class="editable" v-if="this.$store.state.elementBuffer === null"></div>
   </div>
 </template>
 
@@ -37,7 +37,6 @@ export default {
       events: 'click',  //事件类型,目前有3个,为['click','dblclick','mouseover']
       method: 'alert',  //方法类型,目前有3个,为['alert','console','location']
       input: '', //事件的具体内容,由用户输入
-      Display:true,
     }
   },
   methods: {
@@ -60,11 +59,6 @@ export default {
             this.input)
       }
       // }
-    }
-  },
-  watch: {
-    '$store.state.elementBuffer'() {
-      this.Display = this.$store.state.elementBuffer === null;
     }
   },
 }

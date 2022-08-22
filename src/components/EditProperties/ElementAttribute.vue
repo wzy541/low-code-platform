@@ -45,7 +45,7 @@
                @click="deleteElement">删除元素
     </el-button>
 
-    <div class="editable" v-if="attributeDisplay"></div>
+    <div class="editable" v-if="this.$store.state.elementBuffer === null"></div>
   </div>
 </template>
 
@@ -55,7 +55,6 @@ export default {
   name: "ElementAttribute",
   data() {
     return {
-      attributeDisplay: true,
       restaurants: [],//用来暂存数据的地方
       predefineColors: [  //预置颜色
         '#ff4500',
@@ -113,8 +112,9 @@ export default {
   computed: {
     elementWidth: {
       get() {
-        if (this.$store.state.elementBuffer === null) {
-          return this.$store.state.domTree.style.width;
+        if (this.$store.state.elementBuffer === null ||
+            this.$store.state.elementBuffer.style.width === null) {
+          return '';
         } else {
           return this.$store.state.elementBuffer.style.width;
         }
@@ -125,8 +125,9 @@ export default {
     },
     elementHeight: {
       get() {
-        if (this.$store.state.elementBuffer === null) {
-          return this.$store.state.domTree.style.height;
+        if (this.$store.state.elementBuffer === null ||
+            this.$store.state.elementBuffer.style.height === null) {
+          return '';
         } else {
           return this.$store.state.elementBuffer.style.height;
         }
@@ -169,8 +170,7 @@ export default {
     fontFamily: {
       get() {
         if (this.$store.state.elementBuffer === null ||
-            this.$store.state.elementBuffer.style.fontFamily === null ||
-            this.$store.state.elementBuffer.style.fontFamily === '') {
+            this.$store.state.elementBuffer.style.fontFamily === null) {
           return '';
         } else {
           return this.$store.state.elementBuffer.style.fontFamily;
@@ -184,8 +184,7 @@ export default {
     fontSize: {
       get() {
         if (this.$store.state.elementBuffer === null ||
-            this.$store.state.elementBuffer.style.fontSize === null ||
-            this.$store.state.elementBuffer.style.fontSize === '') {
+            this.$store.state.elementBuffer.style.fontSize === null) {
           return '';
         } else {
           return this.$store.state.elementBuffer.style.fontSize;
@@ -195,11 +194,6 @@ export default {
         this.$store.commit('refreshFontSize', value);
       }
     },
-  },
-  watch: {
-    '$store.state.elementBuffer'() {
-      this.attributeDisplay = this.$store.state.elementBuffer === null;
-    }
   },
   mounted() {
     this.restaurants = this.loadAll();
