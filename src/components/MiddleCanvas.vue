@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import {getComponent, getId,disposePath} from "../utils/index"; //导入组件创建是相关函数
+import {getComponent, getId,disposePath} from "../utils/index";
 
 export default {
   name: 'MiddleCanvas',
@@ -70,12 +70,16 @@ export default {
       //如果点击的元素是canvas,则清空pathBuffer,让elementAttribute禁用
       console.log('path'+path);
       if (path.length===0){
-        this.$store.commit('clearHighLight');
-        this.$store.commit('clearBuffer');
+        if (this.$store.state.elementBuffer !== null){
+          this.$store.commit('clearHighLight');
+          this.$store.commit('clearBuffer');
+        }
       }else {
         this.$store.commit('writeBuffer', path);
         this.$store.commit('highlight');  //这里是调用方法删除尝试修改样式来达到高亮目的但是失败了.需要进一步改进
       }
+      console.log('Vnode');
+      console.log(this.$vnode); //验证vnode是啥
     },
     //拖拽到画布的回调
     dragOver(e) {

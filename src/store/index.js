@@ -99,6 +99,9 @@ const mutations = {
   refreshFontSize(state,newFontSize) {
     this.state.elementBuffer.style.fontSize=newFontSize;
   },
+  addEvents(state,newEvent){
+    this.state.elementBuffer.events.push(newEvent); //???所以添加的event到底是个啥？
+  }
   /*需要函数,转换函数,能将下面的dom树生成相应的结构*/
 }
 

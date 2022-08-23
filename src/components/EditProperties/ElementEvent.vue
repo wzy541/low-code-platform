@@ -43,7 +43,8 @@ export default {
     // 设置事件
     setEvent() {
       //跳出控制信息,依次为:触发的事件,调用的方法,输出结果
-      console.log(this.events, this.method, this.input)
+      console.log(this.events, this.method, this.input);
+      console.log(this.$vnode); //验证vnode是啥
       // document.getElementById(el).addEventListener(this.events, fn)
       //这一函数用于判断添加的事件时什么并进行相应操作,再真实情况下需要完全重写,
       // 因现在只做调试用,注去了其函数名
@@ -59,6 +60,7 @@ export default {
             this.input)
       }
       // }
+
     }
   },
 }
