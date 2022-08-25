@@ -66,6 +66,8 @@ export default {
   methods: {
     //画布点击事件,需要重构,想办法获取点击的元素
     checkComp(e) {
+      console.log(e.target);
+      console.log(e.path);
       let path = disposePath(e.path); //取得被点击元素的路径
       //如果点击的元素是canvas,则清空pathBuffer,让elementAttribute禁用
       console.log('path'+path);
@@ -78,8 +80,8 @@ export default {
         this.$store.commit('writeBuffer', path);
         this.$store.commit('highlight');  //这里是调用方法删除尝试修改样式来达到高亮目的但是失败了.需要进一步改进
       }
-      console.log('Vnode');
-      console.log(this.$vnode); //验证vnode是啥
+      console.log('VNode');
+      console.log(this.$vnode); //验证VNode是啥
     },
     //拖拽到画布的回调
     dragOver(e) {
