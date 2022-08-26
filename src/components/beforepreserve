@@ -1,0 +1,138 @@
+<template>
+  <div class="wrapper">
+    <h2>low-code</h2>
+    <demo></demo>
+    <div class="btn-box">
+      <div class="btn active" id = 'preserve' @click = "preserve">保存</div>
+      <div class="btn" id = 'expo' @click="expo">导出</div>
+      <div class="btn" id = 'impo' @click="showImportDialog = true">导入</div>
+      <div class="btn">后退</div>
+      <div class="btn" id = rese @click="rese">重置</div>
+      <div class="btn">预览</div>
+    </div>
+
+    <el-dialog title="导入" :show-close="false" :visible="showImportDialog">
+      <div class="import-box">
+        <input type="file" @change="onFileChange" />
+      </div>
+      <div slot="footer">
+        <el-button size="small" :disabled="isImporting" @click="showImportDialog = false">取消</el-button>
+        <el-button size="small" type="primary" :loading="isImporting" @click="impo">导入</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import demo from "./demo.vue";
+
+export default {
+    name: "headView",
+    props:['displaydata'],
+    data(){
+      return{
+        //测试
+        myCurrComp:'myCurrComp',
+        showImportDialog: false,
+        uploadJsonFile: null,
+        isImporting: false,
+      }
+    },
+
+    components: {
+        demo,
+    },
+  
+    methods: {
+      preserve(){
+        // 将页面现有的渲染组件数据存入localStorage
+        //包括ID，类型，位置
+        localStorage.setItem("DATA",JSON.stringify(this.displaydata))
+        //将localStorage数据写入页面
+        localStorage.getItem(DATA)
+
+      },
+      expo(){
+        if (this.displaydata.length === 0) return;
+        this.saveJSON(this.displaydata, 'displaydata');
+      },
+      saveJSON(data, filename){
+        if(!data) {
+          alert('保存的数据为空');
+          return;
+        }
+        if(!filename) 
+          filename = 'json.json'
+        if(typeof data === 'object'){
+          data = JSON.stringify(data, undefined, 4)
+        }
+        var blob = new Blob([data], {type: 'text/json'}),
+        e = document.createEvent('MouseEvents'),
+        a = document.createElement('a')
+        a.download = filename
+        a.href = window.URL.createObjectURL(blob)
+        a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
+        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+        a.dispatchEvent(e)
+      },
+      impo(){
+        if (!this.uploadJsonFile) return;
+        this.isImporting = true;
+        try {
+          const reader = new FileReader();
+          reader.readAsText(this.uploadJsonFile, "UTF-8");
+          reader.onload = (event) => {
+            this.$emit('imported', JSON.parse(event.target.result));
+            this.isImporting = false;
+            this.showImportDialog = false;
+          }
+        } catch(e) {
+          console.error(e.message);
+        }
+      },
+
+      rese(){
+        //清空localStorage，重新渲染
+        localStorage.removeItem('DATA')
+        //将localStorage数据写入页面
+        localStorage.getItem('')
+        location.reload()
+
+      },
+      onFileChange(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          this.uploadJsonFile = files[0];
+        }
+      },
+    }
+};
+</script>
+
+<style scoped lang="less">
+.wrapper {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    border-bottom: 1px solid #a7a7a7;
+    .btn-box {
+        display: flex;
+        justify-content: space-between;
+    }
+    .btn {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        margin: 0 20px;
+        padding: 8px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        &.active {
+            color: white;
+            background-color: #5794f5;
+        }
+    }
+}
+</style>
